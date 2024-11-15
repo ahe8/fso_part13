@@ -20,7 +20,8 @@ router.get('/', async (req, res) => {
             title: {
                 [Op.iLike]: `%${req.query.search}%`
             }
-        }
+        },
+        order: [['likes', 'DESC']]
     })
     if (blog) {
         res.json(blog)
@@ -53,7 +54,7 @@ router.put('/:id', blogFinder, async (req, res) => {
 router.delete('/:id', [blogFinder, userExtractor], async (req, res) => {
 
     if (req.blog) {
-        if(req.blog.userId === req.user) {
+        if (req.blog.userId === req.user) {
             await req.blog.destroy()
         } else {
             res.status(401).end()
