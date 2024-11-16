@@ -22,6 +22,12 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false
   },
+  createdAt:{
+    type: DataTypes.DATE
+  },
+  updatedAt:{
+    type: DataTypes.DATE
+  }
 }, {
   sequelize,
   underscored: true,
