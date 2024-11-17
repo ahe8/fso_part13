@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 
+const { ActiveSession } = require('../models')
+
 const errorHandler = (error, request, response, next) => {
     console.log(error.message)
 
@@ -28,8 +30,21 @@ const userExtractor = (req, res, next) => {
     next()
 }
 
+const checkValidSession = async (req, res, next) => {
+    const validSession = await ActiveSession.findOne(
+        { where: { authToken: req.token } }
+    )
+
+    if (req.token && validSession) {
+        next()
+    } else {
+        res.status(401).json({ error: 'invalid session' })
+    }
+}
+
 module.exports = {
     errorHandler,
     tokenExtractor,
-    userExtractor
+    userExtractor,
+    checkValidSession
 }

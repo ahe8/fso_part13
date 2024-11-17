@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
 const { ReadingList } = require('../models');
-const { userExtractor } = require('../util/middleware');
+const { userExtractor, checkValidSession } = require('../util/middleware');
 
 
 router.get('/', async (req, res) => {
@@ -10,13 +10,13 @@ router.get('/', async (req, res) => {
 })
 
 
-router.post('/', async(req, res) => {
+router.post('/', checkValidSession, async(req, res) => {
     const readingList = await ReadingList.create(req.body)
 
     res.json(readingList)
 })
 
-router.put('/:id', userExtractor, async(req, res) => {
+router.put('/:id', [checkValidSession, userExtractor], async(req, res) => {
     const readingList = await ReadingList.findByPk(req.params.id)
 
     if(req.user === readingList.userId) {
